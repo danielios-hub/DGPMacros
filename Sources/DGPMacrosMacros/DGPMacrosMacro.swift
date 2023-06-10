@@ -26,17 +26,8 @@ public struct InitMacro: MemberMacro {
     Context : SwiftSyntaxMacros.MacroExpansionContext {
         
         let isPublic = node.argument?.lastToken(viewMode: .sourceAccurate)?.text != false.description
-        let members = try {
-            if let structDecl = declaration.as(StructDeclSyntax.self) {
-                return structDecl.memberBlock.members
-            } else if let classDecl = declaration.as(ClassDeclSyntax.self) {
-                return classDecl.memberBlock.members
-            } else {
-                throw InitError.onlyApplicableToStructOrClass
-            }
-        }()
-
-        let membersDecl = members.compactMap { $0.decl.as(VariableDeclSyntax.self)}
+        let membersDecl = try getMembers(declaration: declaration)
+        
         let variablesName = membersDecl.compactMap { $0.bindings.first?.pattern }
         let variablesType = membersDecl.compactMap { $0.bindings.first?.typeAnnotation?.type }
         
@@ -53,6 +44,20 @@ public struct InitMacro: MemberMacro {
             }
         }
         return [DeclSyntax(initializer)]
+    }
+    
+    private static func getMembers<Declaration : DeclGroupSyntax>(declaration: Declaration) throws -> [VariableDeclSyntax] {
+        let members = try {
+            if let structDecl = declaration.as(StructDeclSyntax.self) {
+                return structDecl.memberBlock.members
+            } else if let classDecl = declaration.as(ClassDeclSyntax.self) {
+                return classDecl.memberBlock.members
+            } else {
+                throw InitError.onlyApplicableToStructOrClass
+            }
+        }()
+
+        return members.compactMap { $0.decl.as(VariableDeclSyntax.self)}
     }
 }
 
