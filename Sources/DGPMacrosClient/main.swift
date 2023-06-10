@@ -1,8 +1,24 @@
 import DGPMacros
 
-let a = 17
-let b = 25
+@Init
+class Person {
+    let name: String
+    let age: Int
+    var gender: String
+}
 
-let (result, code) = #stringify(a + b)
+@Init(isPublic: false)
+class PrivatePerson {
+    let name: String
+    let age: Int
+    var gender: String
+}
 
-print("The value \(result) was produced by the code \"\(code)\"")
+@Init
+struct StructuredPerson {
+    let name: String
+    let age: Int
+    var gender: String
+}
+
+let person = Person(name: "name", age: 2, gender: "M")
