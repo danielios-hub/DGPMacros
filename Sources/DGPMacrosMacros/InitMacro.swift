@@ -67,3 +67,4 @@ struct DGPMacrosPlugin: CompilerPlugin {
         InitMacro.self
     ]
 }
+

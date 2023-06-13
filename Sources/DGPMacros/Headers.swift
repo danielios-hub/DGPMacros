@@ -10,5 +10,12 @@
 //@freestanding(expression)
 //public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "DGPMacrosMacros", type: "StringifyMacro")
 
+import Foundation
+
 @attached(member, names: named(init))
 public macro Init(isPublic: Bool = true) = #externalMacro(module: "DGPMacrosMacros", type: "InitMacro")
+
+/// Check if provided string literal is a valid URL and produce a non-optional
+/// URL value. Emit error otherwise.
+@freestanding(expression)
+public macro URL(_ stringLiteral: String) -> URL = #externalMacro(module: "DGPMacrosMacros", type: "URLMacro")
